@@ -1,3 +1,7 @@
+;; Customizations shall be saved and loaded to/from a
+;; separate file
+(setq custom-file "~/.emacs-custom.el")
+(load custom-file)
 
 (package-initialize)
 ;; load-path adds
