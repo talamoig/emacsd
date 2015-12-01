@@ -51,7 +51,6 @@
 	 ( "<f5> S" . helm-multi-swoop)))
 
 (use-package paradox :ensure t) 
-(setq paradox-github-token "478893d7b339e9049605be85f775f55f84b476a1")
 ;;
 ;; magit
 ;; https://github.com/magit/magit 
