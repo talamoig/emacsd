@@ -3,6 +3,10 @@
 (setq custom-file "~/.emacs-custom.el")
 (load custom-file)
 
+(set-face-attribute 'default nil :height 190)
+(set-background-color "#222244")
+(set-foreground-color "#dddddd")
+
 (package-initialize)
 ;; load-path adds
 (add-to-list 'load-path "~/.emacs.d/site-lisp/magit/lisp")
@@ -17,10 +21,28 @@
   (package-install 'use-package))
 (setq use-package-verbose t)
 
+(package-install 'edit-server)
+(require 'edit-server)
+(edit-server-start)
+
 (require 'package)
 (require 'magit)
 (require 'use-package)
 
+;; screenshot inside org-mode buffer
+(defun my-org-screenshot ()
+  "Take a screenshot into a time stamped unique-named file in the
+same directory as the org-buffer and insert a link to this file."
+  (interactive)
+  (setq filename
+        (concat
+         (make-temp-name
+          (concat (buffer-file-name)
+                  "_"
+                  (format-time-string "%Y%m%d_%H%M%S_")) ) ".png"))
+  (call-process "/usr/local/bin/import" nil nil nil filename)
+  (insert (concat "[[" filename "]]"))
+  (org-display-inline-images))
 
 ;; application specific
 
@@ -90,6 +112,27 @@
      (css . t)
      (sh . t)))))
 
+;; org-mode headings size
+(custom-set-faces
+  '(org-level-1 ((t (:inherit outline-1 :height 1.6))))
+  '(org-level-2 ((t (:inherit outline-2 :height 1.4))))
+  '(org-level-3 ((t (:inherit outline-3 :height 1.2))))
+  '(org-level-4 ((t (:inherit outline-4 :height 1.0))))
+  '(org-level-5 ((t (:inherit outline-5 :height 0.9))))
+)
+
+;; show inline images
+(defun do-org-show-all-inline-images ()
+  (interactive)
+  (org-display-inline-images t t))
+(global-set-key (kbd "C-c C-x C v")
+                'do-org-show-all-inline-images)
+
+;; for fancy bullets
+(package-install 'org-bullets)
+(require 'org-bullets)
+(add-hook 'org-mode-hook (lambda () (org-bullets-mode 1)))
+
 ;; use ido mode for buffer and file selections
 (use-package ido
 	     :ensure t
@@ -107,3 +150,7 @@
 	     :bind (("M-x" . smex)
 		    ("M-X" . smex-major-mode-commands)
 		    ("C-c M-x" . execute-extended-command)))
+
+
+(package-install 'vagrant-tramp)
+(require 'vagrant-tramp)
