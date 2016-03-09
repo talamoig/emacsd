@@ -154,3 +154,32 @@ same directory as the org-buffer and insert a link to this file."
 
 (package-install 'vagrant-tramp)
 (require 'vagrant-tramp)
+
+;; yes or no questions to be answered by simple y/n
+(fset 'yes-or-no-p 'y-or-n-p)
+
+(package-install 'multiple-cursors)
+(require 'multiple-cursors)
+
+;; for displaying automatically inline images
+(defun do-org-show-all-inline-images ()
+  (interactive)
+  (org-display-inline-images t t))
+(global-set-key (kbd "C-c C-x C v")
+                'do-org-show-all-inline-images)
+
+;; latex stuff
+(require 'ox-latex)
+(unless (boundp 'org-latex-classes)
+  (setq org-latex-classes nil))
+(add-to-list 'org-latex-classes
+             '("article"
+               "\\documentclass{article}"
+               ("\\section{%s}" . "\\section*{%s}")))
+
+
+;; https://github.com/auto-complete/auto-complete
+(package-install 'auto-complete)
+(require 'auto-complete)
+(ac-config-default)
+
