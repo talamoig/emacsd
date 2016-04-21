@@ -168,18 +168,33 @@ same directory as the org-buffer and insert a link to this file."
 (global-set-key (kbd "C-c C-x C v")
                 'do-org-show-all-inline-images)
 
-;; latex stuff
-(require 'ox-latex)
-(unless (boundp 'org-latex-classes)
-  (setq org-latex-classes nil))
-(add-to-list 'org-latex-classes
-             '("article"
-               "\\documentclass{article}"
-               ("\\section{%s}" . "\\section*{%s}")))
-
 
 ;; https://github.com/auto-complete/auto-complete
 (package-install 'auto-complete)
 (require 'auto-complete)
 (ac-config-default)
 
+;; http://orgmode.org/worg/exporters/beamer/ox-beamer.html
+(require 'ox-latex)
+(add-to-list 'org-latex-classes
+             '("beamer"
+               "\\documentclass\[presentation\]\{beamer\}"
+               ("\\section\{%s\}" . "\\section*\{%s\}")
+               ("\\subsection\{%s\}" . "\\subsection*\{%s\}")
+               ("\\subsubsection\{%s\}" . "\\subsubsection*\{%s\}")))
+
+(defun set-exec-path-from-shell-PATH ()
+  "Sets the exec-path to the same value used by the user shell"
+  (let ((path-from-shell
+         (replace-regexp-in-string
+          "[[:space:]\n]*$" ""
+          (shell-command-to-string "$SHELL -l -c 'echo $PATH'"))))
+    (setenv "PATH" path-from-shell)
+    (setq exec-path (split-string path-from-shell path-separator))))
+
+;; call function now
+(set-exec-path-from-shell-PATH)
+
+;; automatically save sessions
+;; see https://www.gnu.org/software/emacs/manual/html_node/emacs/Saving-Emacs-Sessions.html for futher details
+(desktop-save-mode 1)
